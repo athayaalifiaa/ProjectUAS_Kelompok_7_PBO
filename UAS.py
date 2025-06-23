@@ -16,7 +16,7 @@ class Labeling(ABC):
 
 # Abstract Class
 class ProdukRoti(ABC):
-    def _init_(self, nama, kode, bahan, biaya, harga):
+    def __init__(self, nama, kode, bahan, biaya, harga):
         self.nama = nama
         self.kode = kode
         self.bahan = bahan  
@@ -167,5 +167,5 @@ def simulasi_produksi():
             return
     print("Produk tidak ditemukan.")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     menu()
