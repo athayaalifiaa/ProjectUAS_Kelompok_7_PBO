@@ -4,15 +4,15 @@ from abc import ABC, abstractmethod
 
 class Baking(ABC):
     @abstractmethod
-    def bake(self): pass
+    def IBaking(self): pass
 
 class Packaging(ABC):
     @abstractmethod
-    def pack(self): pass
+    def IPacking(self): pass
 
 class Labeling(ABC):
     @abstractmethod
-    def label(self): pass
+    def ILabeling(self): pass
 
 # Abstract Class
 class ProdukRoti(ABC):
@@ -161,9 +161,9 @@ def simulasi_produksi():
             p.pengembangan()
             p.pemanggangan()
             p.topping()
-            p.bake()
-            p.pack()
-            p.label()
+            p.IBaking()
+            p.IPacking()
+            p.ILabeling()
             return
     print("Produk tidak ditemukan.")
 
