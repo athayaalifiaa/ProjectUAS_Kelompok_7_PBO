@@ -15,14 +15,12 @@ class ILabeling(ABC):
 
 # Abstract Class
 class HanariBakery(ABC):
-    def __init__(self, nama_produk, kode_produk, bahan_baku, biaya_produksi, harga_jual, jenis_topping, waktu_pengembangan):
+    def __init__(self, nama_produk, kode_produk, bahan_baku, biaya_produksi, harga_jual):
         self.nama_produk = nama_produk
         self.kode_produk = kode_produk
         self.bahan_baku = bahan_baku  # dictionary
         self.biaya_produksi = biaya_produksi
         self.harga_jual = harga_jual
-        self.jenis_topping = jenis_topping
-        self.waktu_pengembangan = waktu_pengembangan
 
     def tampilkan_info(self):
         print(f"\n=== {self.nama_produk.upper()} ({self.kode_produk}) ===")
@@ -31,8 +29,6 @@ class HanariBakery(ABC):
             print(f"- {b}: {j}")
         print(f"Biaya Produksi: Rp{self.biaya_produksi}")
         print(f"Harga Jual: Rp{self.harga_jual}")
-        print(f"Topping: {self.jenis_topping}")
-        print(f"Waktu Pengembangan: {self.waktu_pengembangan} menit")
 
     def estimasi_profit(self, jumlah_pcs):
         return (self.harga_jual - self.biaya_produksi) * jumlah_pcs
@@ -43,14 +39,16 @@ class HanariBakery(ABC):
     @abstractmethod
     def proses_pemanggangan(self): pass
 
-    @abstractmethod
-    def proses_topping(self): pass
-
-    def proses_pengembangan(self):
-        print("Tidak memerlukan proses pengembangan.")
-
-# Subclass
+# Roti Manis
 class RotiManis(HanariBakery, IBaking, IPackaging, ILabeling):
+    def __init__(self, nama, kode, bahan, biaya, harga, waktu):
+        super().__init__(nama, kode, bahan, biaya, harga)
+        self.waktu_pengembangan = waktu
+
+    def tampilkan_info(self):
+        super().tampilkan_info()
+        print(f"Waktu Pengembangan: {self.waktu_pengembangan} menit")
+
     def proses_pengadonan(self): print("Mengaduk adonan roti manis...")
     def proses_pengembangan(self): print("Proofing roti manis...")
     def proses_pemanggangan(self): print("Memanggang roti manis...")
@@ -58,7 +56,16 @@ class RotiManis(HanariBakery, IBaking, IPackaging, ILabeling):
     def pack(self): print("Mengemas roti manis...")
     def label(self): print("Label: Roti Manis")
 
+# Croissant
 class Croissant(HanariBakery, IBaking, IPackaging, ILabeling):
+    def __init__(self, nama, kode, bahan, biaya, harga, waktu):
+        super().__init__(nama, kode, bahan, biaya, harga)
+        self.waktu_pengembangan = waktu
+
+    def tampilkan_info(self):
+        super().tampilkan_info()
+        print(f"Waktu Pengembangan: {self.waktu_pengembangan} menit")
+
     def proses_pengadonan(self): print("Mengaduk adonan croissant...")
     def proses_pengembangan(self): print("Melipat dan proofing croissant...")
     def proses_pemanggangan(self): print("Memanggang croissant...")
@@ -66,19 +73,39 @@ class Croissant(HanariBakery, IBaking, IPackaging, ILabeling):
     def pack(self): print("Mengemas croissant...")
     def label(self): print("Label: Croissant")
 
+# Butter Cookies
 class ButterCookies(HanariBakery, IBaking, IPackaging, ILabeling):
+    def __init__(self, nama, kode, bahan, biaya, harga, topping):
+        super().__init__(nama, kode, bahan, biaya, harga)
+        self.jenis_topping = topping
+
+    def tampilkan_info(self):
+        super().tampilkan_info()
+        print(f"Jenis Topping: {self.jenis_topping}")
+
     def proses_pengadonan(self): print("Mengaduk adonan butter cookies...")
     def proses_pemanggangan(self): print("Memanggang butter cookies...")
-    def proses_topping(self): print("Menambahkan gula tabur...")
+    def proses_topping(self): print("Menambahkan topping ke butter cookies...")
     def bake(self): print("Baking butter cookies...")
     def pack(self): print("Mengemas butter cookies...")
     def label(self): print("Label: Butter Cookies")
 
+# Muffin
 class Muffin(HanariBakery, IBaking, IPackaging, ILabeling):
+    def __init__(self, nama, kode, bahan, biaya, harga, topping, waktu):
+        super().__init__(nama, kode, bahan, biaya, harga)
+        self.jenis_topping = topping
+        self.waktu_pengembangan = waktu
+
+    def tampilkan_info(self):
+        super().tampilkan_info()
+        print(f"Jenis Topping: {self.jenis_topping}")
+        print(f"Waktu Pengembangan: {self.waktu_pengembangan} menit")
+
     def proses_pengadonan(self): print("Mengaduk adonan muffin...")
     def proses_pengembangan(self): print("Proofing muffin...")
     def proses_pemanggangan(self): print("Memanggang muffin...")
-    def proses_topping(self): print("Menambahkan topping buah...")
+    def proses_topping(self): print("Menambahkan topping ke muffin...")
     def bake(self): print("Baking muffin...")
     def pack(self): print("Mengemas muffin...")
     def label(self): print("Label: Muffin")
@@ -108,8 +135,6 @@ def tambah_produk():
     nama = input("Nama produk: ")
     kode = input("Kode produk: ")
     jenis = input("Jenis (roti manis/croissant/butter cookies/muffin): ").lower()
-    topping = input("Jenis topping: ")
-    waktu = input("Waktu pengembangan (menit): ")
     bahan = {}
     while True:
         bhn = input("Nama bahan (done = selesai): ")
@@ -119,13 +144,25 @@ def tambah_produk():
     biaya = int(input("Biaya produksi: "))
     harga = int(input("Harga jual: "))
 
-    cls = {"roti manis": RotiManis, "croissant": Croissant, "butter cookies": ButterCookies, "muffin": Muffin}
-    if jenis in cls:
-        produk = cls[jenis](nama, kode, bahan, biaya, harga, topping, waktu)
-        produk_list.append(produk)
-        print("Produk berhasil ditambahkan!")
+    if jenis == "roti manis":
+        waktu = int(input("Waktu pengembangan (menit): "))
+        produk = RotiManis(nama, kode, bahan, biaya, harga, waktu)
+    elif jenis == "croissant":
+        waktu = int(input("Waktu pengembangan (menit): "))
+        produk = Croissant(nama, kode, bahan, biaya, harga, waktu)
+    elif jenis == "butter cookies":
+        topping = input("Jenis topping: ")
+        produk = ButterCookies(nama, kode, bahan, biaya, harga, topping)
+    elif jenis == "muffin":
+        topping = input("Jenis topping: ")
+        waktu = int(input("Waktu pengembangan (menit): "))
+        produk = Muffin(nama, kode, bahan, biaya, harga, topping, waktu)
     else:
         print("Jenis tidak dikenali.")
+        return
+
+    produk_list.append(produk)
+    print("Produk berhasil ditambahkan!")
 
 def tampilkan_produk():
     if not produk_list:
@@ -149,9 +186,15 @@ def simulasi_produksi():
         if p.kode_produk == kode:
             print("\n-- Simulasi Produksi --")
             p.proses_pengadonan()
-            p.proses_pengembangan()
+            if hasattr(p, 'proses_pengembangan'):
+                try:
+                    p.proses_pengembangan()
+                except: pass
             p.proses_pemanggangan()
-            p.proses_topping()
+            if hasattr(p, 'proses_topping'):
+                try:
+                    p.proses_topping()
+                except: pass
             p.bake()
             p.pack()
             p.label()
