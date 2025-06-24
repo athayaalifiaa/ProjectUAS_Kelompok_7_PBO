@@ -1,169 +1,162 @@
-
 from abc import ABC, abstractmethod
 
-
-class Baking(ABC):
+# Interfaces
+class IBaking(ABC):
     @abstractmethod
-    def IBaking(self): pass
+    def bake(self): pass
 
-class Packaging(ABC):
+class IPackaging(ABC):
     @abstractmethod
-    def IPacking(self): pass
+    def pack(self): pass
 
-class Labeling(ABC):
+class ILabeling(ABC):
     @abstractmethod
-    def ILabeling(self): pass
+    def label(self): pass
 
 # Abstract Class
-class ProdukRoti(ABC):
-    def __init__(self, nama, kode, bahan, biaya, harga):
-        self.nama = nama
-        self.kode = kode
-        self.bahan = bahan  
-        self.biaya = biaya
-        self.harga = harga
+class HanariBakery(ABC):
+    def __init__(self, nama_produk, kode_produk, bahan_baku, biaya_produksi, harga_jual, jenis_topping, waktu_pengembangan):
+        self.nama_produk = nama_produk
+        self.kode_produk = kode_produk
+        self.bahan_baku = bahan_baku  # dictionary
+        self.biaya_produksi = biaya_produksi
+        self.harga_jual = harga_jual
+        self.jenis_topping = jenis_topping
+        self.waktu_pengembangan = waktu_pengembangan
 
-    def tampil_info(self):
-        print(f"\n=== {self.nama.upper()} ({self.kode}) ===")
+    def tampilkan_info(self):
+        print(f"\n=== {self.nama_produk.upper()} ({self.kode_produk}) ===")
         print("Bahan Baku:")
-        for b, j in self.bahan.items():
+        for b, j in self.bahan_baku.items():
             print(f"- {b}: {j}")
-        print(f"Biaya Produksi: Rp{self.biaya}")
-        print(f"Harga Jual: Rp{self.harga}")
+        print(f"Biaya Produksi: Rp{self.biaya_produksi}")
+        print(f"Harga Jual: Rp{self.harga_jual}")
+        print(f"Topping: {self.jenis_topping}")
+        print(f"Waktu Pengembangan: {self.waktu_pengembangan} menit")
 
-    def hitung_profit(self, jumlah):
-        return (self.harga - self.biaya) * jumlah
-
-    @abstractmethod
-    def pengadonan(self): pass
-
-    def pengembangan(self):
-        print("Tidak perlu proses pengembangan.")
+    def estimasi_profit(self, jumlah_pcs):
+        return (self.harga_jual - self.biaya_produksi) * jumlah_pcs
 
     @abstractmethod
-    def pemanggangan(self): pass
+    def proses_pengadonan(self): pass
 
     @abstractmethod
-    def topping(self): pass
+    def proses_pemanggangan(self): pass
 
-# Subclasses
-class RotiManis(ProdukRoti, Baking, Packaging, Labeling):
-    def pengadonan(self): print("Mengaduk adonan roti manis...")
-    def pengembangan(self): print("Proofing adonan roti manis...")
-    def pemanggangan(self): print("Memanggang roti manis...")
-    def topping(self): print("Menambahkan topping manis...")
+    @abstractmethod
+    def proses_topping(self): pass
+
+    def proses_pengembangan(self):
+        print("Tidak memerlukan proses pengembangan.")
+
+# Subclass
+class RotiManis(HanariBakery, IBaking, IPackaging, ILabeling):
+    def proses_pengadonan(self): print("Mengaduk adonan roti manis...")
+    def proses_pengembangan(self): print("Proofing roti manis...")
+    def proses_pemanggangan(self): print("Memanggang roti manis...")
+    def proses_topping(self): print("Menambahkan topping manis...")
     def bake(self): print("Baking roti manis...")
     def pack(self): print("Mengemas roti manis...")
-    def label(self): print("Memberi label Roti Manis.")
+    def label(self): print("Label: Roti Manis")
 
-class Croissant(ProdukRoti, Baking, Packaging, Labeling):
-    def pengadonan(self): print("Mengaduk adonan croissant...")
-    def pengembangan(self): print("Melipat dan fermentasi croissant...")
-    def pemanggangan(self): print("Memanggang croissant...")
-    def topping(self): print("Menambahkan butter glaze...")
+class Croissant(HanariBakery, IBaking, IPackaging, ILabeling):
+    def proses_pengadonan(self): print("Mengaduk adonan croissant...")
+    def proses_pengembangan(self): print("Melipat dan proofing croissant...")
+    def proses_pemanggangan(self): print("Memanggang croissant...")
+    def proses_topping(self): print("Menambahkan butter glaze...")
     def bake(self): print("Baking croissant...")
     def pack(self): print("Mengemas croissant...")
-    def label(self): print("Memberi label Croissant.")
+    def label(self): print("Label: Croissant")
 
-class ButterCookies(ProdukRoti, Baking, Packaging, Labeling):
-    def pengadonan(self): print("Mengaduk adonan butter cookies...")
-    def pemanggangan(self): print("Memanggang butter cookies...")
-    def topping(self): print("Menambahkan taburan gula...")
+class ButterCookies(HanariBakery, IBaking, IPackaging, ILabeling):
+    def proses_pengadonan(self): print("Mengaduk adonan butter cookies...")
+    def proses_pemanggangan(self): print("Memanggang butter cookies...")
+    def proses_topping(self): print("Menambahkan gula tabur...")
     def bake(self): print("Baking butter cookies...")
     def pack(self): print("Mengemas butter cookies...")
-    def label(self): print("Memberi label Butter Cookies.")
+    def label(self): print("Label: Butter Cookies")
 
-class Muffin(ProdukRoti, Baking, Packaging, Labeling):
-    def pengadonan(self): print("Mengaduk adonan muffin...")
-    def pengembangan(self): print("Proofing adonan muffin...")
-    def pemanggangan(self): print("Memanggang muffin...")
-    def topping(self): print("Menambahkan topping buah...")
+class Muffin(HanariBakery, IBaking, IPackaging, ILabeling):
+    def proses_pengadonan(self): print("Mengaduk adonan muffin...")
+    def proses_pengembangan(self): print("Proofing muffin...")
+    def proses_pemanggangan(self): print("Memanggang muffin...")
+    def proses_topping(self): print("Menambahkan topping buah...")
     def bake(self): print("Baking muffin...")
     def pack(self): print("Mengemas muffin...")
-    def label(self): print("Memberi label Muffin.")
+    def label(self): print("Label: Muffin")
 
-# Penyimpanan produk
+# CLI & Data
 produk_list = []
-
-# Menu CLI
 
 def menu():
     while True:
-        print("\n====== HANARI BAKERY SYSTEM ======")
+        print("\n===== HANARI BAKERY SYSTEM =====")
         print("1. Tambah Produk")
         print("2. Tampilkan Semua Produk")
-        print("3. Kalkulator Estimasi Profit")
+        print("3. Estimasi Profit")
         print("4. Simulasi Produksi")
         print("0. Keluar")
+        pilihan = input("Pilih menu: ")
 
-        pilih = input("Pilih menu: ")
-        if pilih == "1": tambah_produk()
-        elif pilih == "2": tampilkan_produk()
-        elif pilih == "3": kalkulator_profit()
-        elif pilih == "4": simulasi_produksi()
-        elif pilih == "0": print("Terima kasih!"); break
+        if pilihan == "1": tambah_produk()
+        elif pilihan == "2": tampilkan_produk()
+        elif pilihan == "3": kalkulator_profit()
+        elif pilihan == "4": simulasi_produksi()
+        elif pilihan == "0": break
         else: print("Pilihan tidak valid.")
 
 def tambah_produk():
     print("\n-- Tambah Produk --")
     nama = input("Nama produk: ")
     kode = input("Kode produk: ")
-    jenis = input("Jenis produk (roti manis / croissant / butter cookies / muffin): ").lower()
+    jenis = input("Jenis (roti manis/croissant/butter cookies/muffin): ").lower()
+    topping = input("Jenis topping: ")
+    waktu = input("Waktu pengembangan (menit): ")
     bahan = {}
     while True:
-        bhn = input("Nama bahan (ketik 'done' jika selesai): ")
+        bhn = input("Nama bahan (done = selesai): ")
         if bhn == "done": break
         jumlah = input(f"Jumlah {bhn}: ")
         bahan[bhn] = jumlah
-    biaya = int(input("Biaya produksi per-n pcs: "))
-    harga = int(input("Harga jual per-n pcs: "))
+    biaya = int(input("Biaya produksi: "))
+    harga = int(input("Harga jual: "))
 
-    produk = None
-    if jenis == "roti manis":
-        produk = RotiManis(nama, kode, bahan, biaya, harga)
-    elif jenis == "croissant":
-        produk = Croissant(nama, kode, bahan, biaya, harga)
-    elif jenis == "butter cookies":
-        produk = ButterCookies(nama, kode, bahan, biaya, harga)
-    elif jenis == "muffin":
-        produk = Muffin(nama, kode, bahan, biaya, harga)
+    cls = {"roti manis": RotiManis, "croissant": Croissant, "butter cookies": ButterCookies, "muffin": Muffin}
+    if jenis in cls:
+        produk = cls[jenis](nama, kode, bahan, biaya, harga, topping, waktu)
+        produk_list.append(produk)
+        print("Produk berhasil ditambahkan!")
     else:
         print("Jenis tidak dikenali.")
-        return
-
-    produk_list.append(produk)
-    print("Produk berhasil ditambahkan!")
 
 def tampilkan_produk():
     if not produk_list:
         print("Belum ada produk.")
     for p in produk_list:
-        p.tampil_info()
+        p.tampilkan_info()
 
 def kalkulator_profit():
-    tampilkan_produk()
-    kode = input("\nMasukkan kode produk untuk estimasi: ")
-    jumlah = int(input("Jumlah pcs yang akan diproduksi: "))
+    kode = input("Masukkan kode produk: ")
+    jumlah = int(input("Jumlah pcs: "))
     for p in produk_list:
-        if p.kode == kode:
-            profit = p.hitung_profit(jumlah)
+        if p.kode_produk == kode:
+            profit = p.estimasi_profit(jumlah)
             print(f"Estimasi profit: Rp{profit}")
             return
     print("Produk tidak ditemukan.")
 
 def simulasi_produksi():
-    tampilkan_produk()
-    kode = input("\nMasukkan kode produk untuk simulasi: ")
+    kode = input("Masukkan kode produk: ")
     for p in produk_list:
-        if p.kode == kode:
+        if p.kode_produk == kode:
             print("\n-- Simulasi Produksi --")
-            p.pengadonan()
-            p.pengembangan()
-            p.pemanggangan()
-            p.topping()
-            p.IBaking()
-            p.IPacking()
-            p.ILabeling()
+            p.proses_pengadonan()
+            p.proses_pengembangan()
+            p.proses_pemanggangan()
+            p.proses_topping()
+            p.bake()
+            p.pack()
+            p.label()
             return
     print("Produk tidak ditemukan.")
 
